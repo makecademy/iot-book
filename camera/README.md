@@ -1,4 +1,4 @@
-arduino-yun-camera
+yun-camera
 ==================
 
 This is the code for the "Wireless Security Camera" chapter of the book.
