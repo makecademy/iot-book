@@ -41,11 +41,13 @@ void loop(void)
     filename += ".png";
  
     // Take picture
-    picture.runShellCommand("fswebcam " + path + filename + " -r 1280x720");
+    picture.runShellCommand("fswebcam " + path + filename + 
+      " -r 1280x720");
     while(picture.running());
     
     // Upload to Dropbox
-    picture.runShellCommand("python " + path + "upload_picture.py " + path + filename);
+    picture.runShellCommand("python " + path + "upload_picture.py " + 
+      path + filename);
     while(picture.running());
   }
 }

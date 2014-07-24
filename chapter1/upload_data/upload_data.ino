@@ -16,8 +16,8 @@
 #define DHTTYPE DHT11
 
 // Create CC3000 instances
-Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS, ADAFRUIT_CC3000_IRQ, ADAFRUIT_CC3000_VBAT,
-                                         SPI_CLOCK_DIV2); // you can change this clock speed
+Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS, 
+ADAFRUIT_CC3000_IRQ, ADAFRUIT_CC3000_VBAT, SPI_CLOCK_DIV2);
                                          
 // DHT instance
 DHT dht(DHTPIN, DHTTYPE);
@@ -85,7 +85,10 @@ void loop(void)
   Adafruit_CC3000_Client client = cc3000.connectTCP(ip, 80);
   if (client.connected()) {
     Serial.println(F("Sending request ..."));
-    client.println("GET /dweet/for/" + String(thing_name) + "?temperature="+ String(temperature) +"&humidity="+ String(humidity) +"&light="+ String(light) +" HTTP/1.1");
+    client.println("GET /dweet/for/" + String(thing_name) + 
+    "?temperature="+ String(temperature) + 
+    "&humidity="+ String(humidity) +
+    "&light="+ String(light) +" HTTP/1.1");
     client.println(F("Host: dweet.io"));
     client.println();
   } else {

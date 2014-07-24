@@ -12,12 +12,12 @@ void loop() {
   // Activate relay
   digitalWrite(relay_pin, HIGH);
   
-  // Wait for 1 second
+  // Wait for 5 seconds
   delay(5000);
   
    // Deactivate relay
   digitalWrite(relay_pin, LOW);
   
-  // Wait for 1 second
+  // Wait for 5 seconds
   delay(5000);
 }

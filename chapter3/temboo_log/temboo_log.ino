@@ -67,7 +67,6 @@ void setup() {
   // Initialise the sensor
   if(!bmp.begin())
   {
-    if (debug_mode == true){Serial.print("Ooops, no BMP085 detected ... Check your wiring or I2C ADDR!");}
     while(1);
   }
 }
@@ -94,7 +93,7 @@ void loop() {
                                         temperature); 
 
   if (debug_mode == true){
-    Serial.println("\nCalling the /Library/Google/Spreadsheets/AppendRow Choreo...");
+    Serial.println("\nCalling the AppendRow Choreo...");
   }
   
   // Append data to Google Docs sheet
@@ -105,7 +104,8 @@ void loop() {
 }
 
 // Function to add data to Google Docs
-void runAppendRow(float humidity, int lightLevel, float pressure, float temperature, float altitude) {
+void runAppendRow(float humidity, int lightLevel, 
+  float pressure, float temperature, float altitude) {
   TembooChoreo AppendRowChoreo;
 
   // Invoke the Temboo client
@@ -140,7 +140,12 @@ void runAppendRow(float humidity, int lightLevel, float pressure, float temperat
   
   // Format data
   String data = "";
-  data = data + timeString + "," + String(humidity) + "," + String(lightLevel) + "," + String(pressure) + "," + String(temperature) + "," + String(altitude);
+  data = data + timeString + "," + 
+  String(humidity) + "," + 
+  String(lightLevel) + "," + 
+  String(pressure) + "," + 
+  String(temperature) + "," + 
+  String(altitude);
 
   // Set Choreo inputs
   AppendRowChoreo.addInput("RowData", data);
@@ -151,7 +156,7 @@ void runAppendRow(float humidity, int lightLevel, float pressure, float temperat
   // A return code of zero means everything worked
   if (returnCode == 0) {
     if (debug_mode == true){
-      Serial.println("Completed execution of the /Library/Google/Spreadsheets/AppendRow Choreo.\n");
+      Serial.println("Completed execution of the AppendRow Choreo.\n");
     }
   } else {
     // A non-zero return code means there was an error
