@@ -5,6 +5,7 @@
 #include <ccspi.h>
 #include <SPI.h>
 #include "DHT.h"
+#include <avr/wdt.h>
 
 // Define CC3000 chip pins
 #define ADAFRUIT_CC3000_IRQ   3
@@ -58,17 +59,34 @@ void loop(void)
   // Connect to WiFi network
   cc3000.connectToAP(WLAN_SSID, WLAN_PASS, WLAN_SECURITY);
   Serial.println(F("Connected!"));
+  
+  // Start watchdog 
+  wdt_enable(WDTO_8S); 
     
   // Wait for DHCP to complete
   Serial.println(F("Request DHCP"));
   while (!cc3000.checkDHCP())
   {
     delay(100);
-  }  
+  }
   
-  // Set the website IP
-  uint32_t ip = cc3000.IP2U32(54,88,231,110);
+  // Reset watchdog
+  wdt_reset();
+  
+  // Get IP
+  uint32_t ip = 0;
+  Serial.print(F("www.dweet.io -> "));
+  while  (ip  ==  0)  {
+    if  (!  cc3000.getHostByName("www.dweet.io", &ip))  {
+      Serial.println(F("Couldn't resolve!"));
+    }
+    delay(500);
+  }  
   cc3000.printIPdotsRev(ip);
+  Serial.println(F(""));
+  
+  // Reset watchdog
+  wdt_reset();
 
   // Measure from DHT sensor
   float t = dht.readTemperature();
@@ -80,35 +98,62 @@ void loop(void)
   float sensor_reading = analogRead(A0);
   light = (int)(sensor_reading/1024*100);
   Serial.println(F("Measurements done"));
+  
+  // Reset watchdog
+  wdt_reset();
  
   // Send request to Dweet.io
   Adafruit_CC3000_Client client = cc3000.connectTCP(ip, 80);
   if (client.connected()) {
-    Serial.println(F("Sending request ..."));
-    client.println("GET /dweet/for/" + String(thing_name) + 
-    "?temperature="+ String(temperature) + 
-    "&humidity="+ String(humidity) +
-    "&light="+ String(light) +" HTTP/1.1");
-    client.println(F("Host: dweet.io"));
-    client.println();
+    Serial.print(F("Sending request... "));
+    
+    client.fastrprint(F("GET /dweet/for/"));
+    client.print(thing_name);
+    client.fastrprint(F("?temperature="));
+    client.print(temperature);
+    client.fastrprint(F("&humidity="));
+    client.print(humidity);
+    client.fastrprint(F("&light="));
+    client.print(light);
+    client.fastrprintln(F(" HTTP/1.1"));
+    
+    client.fastrprintln(F("Host: dweet.io"));
+    client.fastrprintln(F("Connection: close"));
+    client.fastrprintln(F(""));
+    
+    Serial.println(F("done."));
+    
   } else {
     Serial.println(F("Connection failed"));    
     return;
   }
   
+  // Reset watchdog
+  wdt_reset();
+  
   // Read answer
+  Serial.println(F("Reading answer..."));
   while (client.connected()) {
     while (client.available()) {
       char c = client.read();
       Serial.print(c);
     }
   }
-  client.close();  
+  Serial.println(F(""));
   
-  // Disconnect
-  Serial.println(F("\n\nDisconnecting"));
+  // Reset watchdog
+  wdt_reset();
+   
+  // Close connection and disconnect
+  client.close();
+  Serial.println(F("Disconnecting"));
+  Serial.println(F(""));
   cc3000.disconnect();
   
+  // Reset watchdog & disable
+  wdt_reset();
+  wdt_disable();
+ 
   // Wait 10 seconds until next update
   delay(10000);
     
