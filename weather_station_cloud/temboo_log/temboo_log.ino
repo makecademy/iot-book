@@ -19,9 +19,11 @@ unsigned long time;
 Process date;
 
 // Your Google Docs data
-const String GOOGLE_USERNAME = "yourEmailAddress";
-const String GOOGLE_PASSWORD = "yourPassword";
-const String SPREADSHEET_TITLE = "Yun";
+const String GOOGLE_CLIENT_ID = "your-google-client-id";
+const String GOOGLE_CLIENT_SECRET = "your-google-client-secret";
+const String GOOGLE_REFRESH_TOKEN = "your-google-refresh-token";
+
+const String SPREADSHEET_TITLE = "your-spreadsheet-title";
 
 // Include required libraries
 #include "DHT.h"
@@ -119,12 +121,15 @@ void runAppendRow(float humidity, int lightLevel,
   // Identify the Choreo to run
   AppendRowChoreo.setChoreo("/Library/Google/Spreadsheets/AppendRow");
 
-  // your Google username (usually your email address)
-  AppendRowChoreo.addInput("Username", GOOGLE_USERNAME);
+  // your Google Client ID
+  AppendRowChoreo.addInput("ClientID", GOOGLE_CLIENT_ID);
 
-  // your Google account password
-  AppendRowChoreo.addInput("Password", GOOGLE_PASSWORD);
-  
+  // your Google Client Secret
+  AppendRowChoreo.addInput("ClientSecret", GOOGLE_CLIENT_SECRET);
+
+  // your Google Refresh Token
+  AppendRowChoreo.addInput("RefreshToken", GOOGLE_REFRESH_TOKEN);
+
   // the title of the spreadsheet you want to append to
   AppendRowChoreo.addInput("SpreadsheetTitle", SPREADSHEET_TITLE);
   
