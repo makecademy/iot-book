@@ -6,7 +6,8 @@ install:
   - arduino --install-library "Adafruit CC3000 Library"
   - arduino --install-library "DHT sensor library"
 script:
-  - arduino --verify --board arduino:avr:uno $PWD/sensors_test/sensors_test.ino
+  - arduino --verify --board arduino:avr:uno $PWD/internet_of_things_dashboard/sensors_test/sensors_test.ino
+  - arduino --verify --board arduino:avr:uno $PWD/internet_of_things_dashboard/upload_data/upload_data.ino
 notifications:
   email:
     on_success: change
