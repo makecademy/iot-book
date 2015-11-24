@@ -8,13 +8,7 @@ install:
   - arduino --install-library "Adafruit BMP085 Unified"
   - arduino --install-library "Adafruit Unified Sensor"
 script:
-  - arduino --verify --board arduino:avr:uno $PWD/internet_of_things_dashboard/sensors_test/sensors_test.ino
-  - arduino --verify --board arduino:avr:uno $PWD/internet_of_things_dashboard/upload_data/upload_data.ino
-
-  - arduino --verify --board arduino:avr:yun $PWD/weather_station_cloud/sensors_test/sensors_test.ino
-  - arduino --verify --board arduino:avr:yun $PWD/weather_station_cloud/temboo_log/temboo_log.ino
-
-  - arduino --verify --board arduino:avr:yun $PWD/wireless_security_camera/yun_camera/yun_camera.ino
+  - build_platform uno
 notifications:
   email:
     on_success: change
